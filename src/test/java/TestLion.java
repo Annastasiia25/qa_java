@@ -1,64 +1,48 @@
 import com.example.Feline;
 import com.example.Lion;
 import com.example.Predator;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Parameterized.class)
+@RunWith(MockitoJUnitRunner.class)
+        // (Parameterized.class)  - я его вывела в отдельный класс теста TestLionParameterized
 public class TestLion {
 
-    private final String lionGender;
-    private final boolean expectedHasMane;
-
-    public TestLion(String lionGender, boolean expectedHasMane) {
-        this.lionGender = lionGender;
-        this.expectedHasMane = expectedHasMane;
-    }
-
-    @Parameterized.Parameters
-    public static Object[][] getTestData() {
-
-        return new Object[][] {
-                {"Самец", true},
-                {"Самка", false},
-                {"Оно", false}
-        };
-    }
-
+    @Mock
+    Feline feline;
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     @Test
-    public void lionConstructorInitializesManeField() throws Exception {
-        Exception expectedException = new Exception("Используйте допустимые значения пола животного - самец или самка");
-        try {
-            Lion lion = new Lion(lionGender);
-            boolean actualHasMane = lion.doesHaveMane();
-            assertEquals("Наличие гривы должно определяться полом льва.",
-                    expectedHasMane, actualHasMane);
-        } catch (Exception actualException) {
-            assertEquals("Сообщение об исключении должно показывать, как выбрать пол льва.",
-                    expectedException.getMessage(), actualException.getMessage());
-        }
-
-    }
-// попробовала расписать тесты без assertThrows
-
-    @Test
-    public void getKittensReturnTrueMethod() {
+    public void ConstructorThrowException() throws Exception {
+        thrown.expect(Exception.class);
+        thrown.expectMessage("Используйте допустимые значения пола животного - самец или самка");
         Predator predator = new Feline();
-        Lion lion = new Lion(predator);
-        int expectedLionKittens = predator.getKittens();
-        int actualLionKittens = lion.getKittens();
-        assertEquals("У льва должно быть столько же котят, сколько у хищника", expectedLionKittens, actualLionKittens);
+        new Lion(predator, "Мясо");
+    }
+
+   @Test
+    public void getKittensReturnTrueMethod() throws Exception {
+       // Predator predator = new Feline();
+        Lion lion = new Lion(feline, "Самец");
+       // int expectedLionKittens = feline.getKittens();
+        //int actualLionKittens = lion.getKittens();
+        Mockito.when(feline.getKittens()).thenReturn(2);
+        assertEquals("У льва должно быть столько же котят, сколько у кошачьих", 2, lion.getKittens());
     }
 
     @Test
-    public void doesHaveManeReturnTrueField() {
+    public void doesHaveManeReturnTrueField() throws Exception {
         Predator predator = new Feline();
-        Lion lion = new Lion(predator);
+        Lion lion = new Lion(predator, "Самка");
         boolean expectedLionMane = false;
         boolean actualLionMane = lion.doesHaveMane();
         assertEquals("У льва по умолчанию нет гривы", expectedLionMane, actualLionMane);
@@ -67,9 +51,9 @@ public class TestLion {
     @Test
     public void getFoodReturnTrueMethod() throws Exception {
         Predator predator = new Feline();
-        Lion lion = new Lion(predator);
+        Lion lion = new Lion(predator, "Самец");
         List<String> expectedLionFood = predator.eatMeat();
         List<String> actualLionFood = lion.getFood();
-        assertEquals("A lion should eat the same food as a predator", expectedLionFood, actualLionFood);
+        assertEquals("Лев есть такую же еду, что и хищник", expectedLionFood, actualLionFood);
     }
 }
