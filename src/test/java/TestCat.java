@@ -8,7 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestCat {
@@ -26,13 +29,14 @@ public class TestCat {
     @Test
     public void testGetFood() throws Exception {
         Cat cat = new Cat(feline);
-        Mockito.when(feline.eatMeat()).thenReturn(List.of("Животные", "Птицы", "Рыба"));
-        System.out.println(cat.getFood());
+        Mockito.when(feline.eatMeat()).thenReturn(Arrays.asList("Животные", "Птицы", "Рыба"));
+        List<String> expectedGetFood = Arrays.asList("Животные", "Птицы", "Рыба");
+        List<String> actualGetFood = cat.getFood();
+        assertEquals("The list of food is not the same", expectedGetFood, actualGetFood);
     }
 
     @Test
     public void testGetSoundCat() {
-        Feline feline = new Feline();
         Cat cat = new Cat(feline);
         String extendedGetSound = "Мяу";
         String actualGetSound = cat.getSound();

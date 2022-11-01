@@ -23,7 +23,7 @@ public class TestLionParameterized {
         return new Object[][]{
                 {"Самец", true},
                 {"Самка", false},
-                {"Оно", false}
+                // {"Оно", false}
         };
     }
 
